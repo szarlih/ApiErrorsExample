@@ -16,15 +16,24 @@ public class FailedRequestsController : ControllerBase
     }
 
     /// <summary>
-    /// Get expected data when number is in range [200..299]
-    /// and error for other ranges
+    /// Get expected data when number is in range [200..299] and error for other ranges
     /// </summary>
-    /// <param name="exampleNumber">if in range [200...299] expected data,
-    /// if in range [400...499] corresponding errors,
-    /// - special error 444 json error message
-    /// if in other range 500 error</param>
-    /// <returns></returns>
+    /// <param name="exampleNumber">The example number to determine the response</param>
+    /// <returns>
+    /// - 200-299: Expected data
+    /// - 400-499: Corresponding client error
+    /// - 444: Special JSON error message
+    /// - Other: 500 Internal server error
+    /// </returns>
+    /// <response code="200">Returns the expected data when the number is in range [200..299]</response>
+    /// <response code="400">Returns a client error when the number is in range [400..499]</response>
+    /// <response code="444">Returns a special JSON error message</response>
+    /// <response code="500">Returns an internal server error for numbers outside the specified ranges</response>
     [HttpGet("{exampleNumber}", Name = "GetResponseDataOrErrorWithData")]
+    [ProducesResponseType(typeof(ExpectedResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorData), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Special444Error), 444)]
+    [ProducesResponseType(typeof(ErrorData), StatusCodes.Status500InternalServerError)]
     public ActionResult Get([FromRoute] int exampleNumber)
     {
         if (exampleNumber.IsInRange(200, 299))

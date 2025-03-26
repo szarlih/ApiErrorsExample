@@ -1,7 +1,6 @@
-﻿namespace ApiErrorsExample.Models
+﻿namespace ApiErrorsExample.Models;
+
+public class ErrorData
 {
-    public class ErrorData
-    {
-        public string Message { get; set; }
-    }
+    public string Message { get; set; }
 }
