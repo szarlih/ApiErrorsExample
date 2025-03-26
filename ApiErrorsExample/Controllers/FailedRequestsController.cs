@@ -16,10 +16,13 @@ public class FailedRequestsController : ControllerBase
     }
 
     /// <summary>
-    /// Get expeced data when number is in range [200..299]
+    /// Get expected data when number is in range [200..299]
     /// and error for other ranges
     /// </summary>
-    /// <param name="exampleNumber">if in range [200...299] expected data, if in range [400...499] corresponding errors, if in other range 500 error</param>
+    /// <param name="exampleNumber">if in range [200...299] expected data,
+    /// if in range [400...499] corresponding errors,
+    /// - special error 444 json error message
+    /// if in other range 500 error</param>
     /// <returns></returns>
     [HttpGet("{exampleNumber}", Name = "GetResponseDataOrErrorWithData")]
     public ActionResult Get([FromRoute] int exampleNumber)
@@ -27,6 +30,22 @@ public class FailedRequestsController : ControllerBase
         if (exampleNumber.IsInRange(200, 299))
         {
             return Ok(new ExpectedResponse { Data = "Expected data" });
+        }
+
+        if (exampleNumber == 444)
+        {
+            return StatusCode(
+                444,
+                new {
+                    errorData = new
+                    {
+                        message = "Special error with status code 444",
+                        timestamp = "2025-03-25 19:49:23",
+                        weekOfYear = "Week 13",
+                        cleanCodePrinciple = "Code is clean if it can be understood easily – by everyone on the team."
+                    }
+                }
+            );
         }
 
         if (exampleNumber.IsInRange(400, 499))
